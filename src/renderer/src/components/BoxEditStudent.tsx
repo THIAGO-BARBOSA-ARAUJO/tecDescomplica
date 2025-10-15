@@ -8,6 +8,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import TextField from '@mui/material/TextField';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import moment from 'moment';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 
 interface EditInterface {
@@ -15,8 +25,38 @@ interface EditInterface {
 }
 
 export default function Editstudent(props: EditInterface) {
+ 
+  const day = moment().format()
+ 
+  //variáveis
   const [open, setOpen] = React.useState(false);
 
+  const [name, setName] = React.useState<string>();
+
+  const [registration, setRegistration] = React.useState<string>();
+
+  const [cpf, setCpf] = React.useState<string>();
+
+  const [rg, setRg] = React.useState<string>();
+  
+  const [dateBirth, setDateBirth] = React.useState<any>();
+
+  const [email, setEmail] = React.useState<string>();
+
+  const [nameMother, setNameMother] = React.useState<string>();
+
+  const [profission, setProfission] = React.useState<string>();
+
+  const [maritalStatus, setMaritalStatus] = React.useState<string>();
+
+  const [financialSituation, setFinancialSituation] = React.useState<string>();
+
+  const [course, setCourse] = React.useState<any>();
+
+  const [sexo, setSexo] = React.useState<any>();
+
+
+  //functions
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -24,6 +64,12 @@ export default function Editstudent(props: EditInterface) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  function FormatDate(date: any) {
+    const oldDate = String(date).split("T")[0].split("-")
+    const newDate = `${oldDate[2]}-${oldDate[1]}-${oldDate[0]}`
+    return newDate
+  }
 
   const DeleteUser = () => {
     console.log("Usuário deletado!")
@@ -76,7 +122,77 @@ export default function Editstudent(props: EditInterface) {
         {/* box principal */}
         <div className='relative'>
           <div className='flex flex-col pl-8 pr-8 bg-white shadow-2xl m-auto w-[calc(100vw-100px)] h-[calc(100vh-130px)] mt-[-100px] rounded-lg'>
-            <h1 className=''>Conteúdo</h1>
+            
+            <div className='flex justify-between mt-9 gap-16'>
+                <TextField className='w-screen' onChange={(name) => setName(name.target.value)} id="name" label="Nome" variant="standard" />
+
+                <TextField className='w-screen' onChange={(registration) => setRegistration(registration.target.value)} id="registration" label="Código de Matrícula" variant="standard" />
+            </div>
+
+            <div className='flex justify-between mt-9 gap-16'>
+              <TextField onChange={(cpf) => setCpf(cpf.target.value)} id="cpf" label="CPF" variant="standard" />
+              
+              <TextField onChange={(rg) => setRg(rg.target.value)} id="rg" label="RG" variant="standard" />
+
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="inputSexo">Sexo</InputLabel>
+                <Select sx={{ m: 1, minWidth: 140, maxWidth: 140 }}
+                  labelId="sexo"
+                  id="sexo"
+                  value={sexo}
+                  defaultValue="Masculino"
+                  onChange={(sexo: SelectChangeEvent) => setSexo(sexo)}
+                  label="Sexo"
+                >
+                  <MenuItem value="Não informado">
+                    <em>Não informado</em>
+                  </MenuItem>
+                  <MenuItem value="Masculino">Masculino</MenuItem>
+                  <MenuItem value="Feminino">Feminino</MenuItem>
+                </Select>
+              </FormControl>
+ 
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  defaultValue={dayjs(moment().format())}
+                  label="Data"
+                  value={dateBirth}
+                  onChange={(newValue: any) => setDateBirth(FormatDate(moment(newValue.$d).format()))}
+                  format="DD/MM/YYYY" // Adicione esta prop
+                />
+              </LocalizationProvider>
+            </div>
+
+            <div className='flex justify-between mt-9 gap-16'>
+                <TextField className='w-screen' onChange={(email) => setEmail(email.target.value)} id="email" label="Email" variant="standard" />
+
+                <TextField className='w-screen' onChange={(nameMother) => setNameMother(nameMother.target.value)} id="nameMother" label="Nome da Mãe" variant="standard" />
+            </div>
+
+            <div className='flex justify-between mt-9 gap-16'>
+                <TextField onChange={(profission) => setProfission(profission.target.value)} id="profission" label="Profissão" variant="standard" />
+
+                <TextField onChange={(maritalStatus) => setMaritalStatus(maritalStatus.target.value)} id="maritalStatus" label="Estado Civil" variant="standard" />
+
+                <TextField onChange={(financialSituation) => setFinancialSituation(financialSituation.target.value)} id="financialSituation" label="Situação Financeira" variant="standard" />
+
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="inputSexo">Curso</InputLabel>
+                    <Select sx={{ m: 1, minWidth: 180, maxWidth: 180 }}
+                      labelId="course"
+                      id="course"
+                      value={course}
+                      defaultValue="Instalações Elétricas"
+                      onChange={(course: SelectChangeEvent) => setCourse(course)}
+                      label="Curso"
+                    >
+                      <MenuItem value="Instalações Elétricas">Instalações Elétricas</MenuItem>
+                      <MenuItem value="Comandos Elétricos">Comandos Elétricos</MenuItem>
+                      <MenuItem value="Automação">Automação</MenuItem>
+                    </Select>
+                </FormControl>
+            </div>
+
           </div>
         </div>
 
@@ -86,9 +202,9 @@ export default function Editstudent(props: EditInterface) {
           onClick={handleClose}
           variant="contained"
           >
-            Fechar
+            Salvar
           </Button>
-          <Button color="error" onClick={DeleteUser}>Excluir</Button>
+          <Button color="error" onClick={DeleteUser}>Fechar</Button>
         
         </DialogActions>
       </Dialog>
