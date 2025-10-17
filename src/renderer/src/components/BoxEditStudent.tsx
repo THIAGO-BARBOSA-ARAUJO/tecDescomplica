@@ -51,6 +51,20 @@ export default function Editstudent(props: EditInterface) {
 
   const [financialSituation, setFinancialSituation] = React.useState<string>();
 
+  const [street, setStreet] = React.useState<string>();
+
+  const [namber, setNamber] = React.useState<string>();
+
+  const [complement, setComplement] = React.useState<string>();
+
+  const [neighborhood, setNeighborhood] = React.useState<string>();
+
+  const [state, setState] = React.useState<string>();
+
+  const [cep, setCep] = React.useState<string>();
+
+  const [startCourse, setStartCourse] = React.useState<any>();
+
   const [course, setCourse] = React.useState<any>();
 
   const [sexo, setSexo] = React.useState<any>();
@@ -121,20 +135,20 @@ export default function Editstudent(props: EditInterface) {
         
         {/* box principal */}
         <div className='relative'>
-          <div className='flex flex-col pl-8 pr-8 bg-white shadow-2xl m-auto w-[calc(100vw-100px)] h-[calc(100vh-130px)] mt-[-100px] rounded-lg'>
+          <div className='pt-10 pb-16 overflow-y-auto flex flex-col pl-8 pr-8 bg-white shadow-2xl m-auto w-[calc(100vw-100px)] h-[calc(100vh-130px)] mt-[-100px] rounded-lg'>
             
-            <div className='flex justify-between mt-9 gap-16'>
+            <div className='flex justify-between gap-16'>
                 <TextField className='w-screen' onChange={(name) => setName(name.target.value)} id="name" label="Nome" variant="standard" />
 
-                <TextField className='w-screen' onChange={(registration) => setRegistration(registration.target.value)} id="registration" label="Código de Matrícula" variant="standard" />
+                <TextField type='number' className='w-screen' onChange={(registration) => setRegistration(registration.target.value)} id="registration" label="Código de Matrícula" variant="standard" />
             </div>
 
             <div className='flex justify-between mt-9 gap-16'>
-              <TextField onChange={(cpf) => setCpf(cpf.target.value)} id="cpf" label="CPF" variant="standard" />
+              <TextField sx={{ mt: 1}} onChange={(cpf) => setCpf(cpf.target.value)} id="cpf" label="CPF" variant="standard" />
               
-              <TextField onChange={(rg) => setRg(rg.target.value)} id="rg" label="RG" variant="standard" />
+              <TextField sx={{ mt: 1}} onChange={(rg) => setRg(rg.target.value)} id="rg" label="RG" variant="standard" />
 
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <FormControl variant="standard" sx={{ mt: 1, minWidth: 120 }}>
                 <InputLabel id="inputSexo">Sexo</InputLabel>
                 <Select sx={{ m: 1, minWidth: 140, maxWidth: 140 }}
                   labelId="sexo"
@@ -176,7 +190,7 @@ export default function Editstudent(props: EditInterface) {
 
                 <TextField onChange={(financialSituation) => setFinancialSituation(financialSituation.target.value)} id="financialSituation" label="Situação Financeira" variant="standard" />
 
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <FormControl variant="standard" sx={{ minWidth: 120 }}>
                   <InputLabel id="inputSexo">Curso</InputLabel>
                     <Select sx={{ m: 1, minWidth: 180, maxWidth: 180 }}
                       labelId="course"
@@ -191,6 +205,43 @@ export default function Editstudent(props: EditInterface) {
                       <MenuItem value="Automação">Automação</MenuItem>
                     </Select>
                 </FormControl>
+            </div>
+
+            <div className='flex justify-between mt-9 gap-16'>
+                <TextField sx={{ mt: 1}} className='w-screen' onChange={(profission) => setProfission(profission.target.value)} id="profission" label="Profissão" variant="standard" />
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    className='w-screen'
+                    defaultValue={dayjs(moment().format())}
+                    label="Data"
+                    value={startCourse}
+                    onChange={(newValue: any) => setStartCourse(FormatDate(moment(newValue.$d).format()))}
+                    format="DD/MM/YYYY" // Adicione esta prop
+                  />
+                </LocalizationProvider>
+            </div>
+
+            <div className='mt-16'>
+              <h1 className='text-[20px] font-bold text-[#11181c]'>Endereço</h1>
+            </div>
+
+            <div className='flex justify-between mt-9 gap-16'>
+                <TextField className='w-screen' onChange={(street) => setStreet(street.target.value)} id="street" label="Rua" variant="standard" />
+
+                <TextField className='w-screen' type='number' onChange={(number) => setNamber(number.target.value)} id="number" label="Número" variant="standard" />
+
+                <TextField className='w-screen' onChange={(complement) => setComplement(complement.target.value)} id="complement" label="Complement" variant="standard" />
+                
+            </div>
+
+            <div className='flex justify-between mt-9 gap-16'>
+                <TextField className='w-screen' onChange={(neighborhood) => setNeighborhood(neighborhood.target.value)} id="neighborhood" label="Bairro" variant="standard" />
+
+                <TextField className='w-screen' onChange={(state) => setState(state.target.value)} id="state" label="Estado" variant="standard" />
+
+                <TextField type='number' className='w-screen' onChange={(cep) => setCep(cep.target.value)} id="cep" label="Cep" variant="standard" />
+                
             </div>
 
           </div>
