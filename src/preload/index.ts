@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { ElectronAPI, electronAPI } from '@electron-toolkit/preload'
+import { Student, NewStudent } from '../shared/types/ipc'
 
 declare global {
   export interface Window {
@@ -12,7 +13,13 @@ declare global {
 const api = {
   fetchUsers: () => {
     return ipcRenderer.invoke("fetch-users")
-  }
+  },
+
+  addStudent: (student: NewStudent): Promise<void | PouchDB.Core.Response> => ipcRenderer.invoke("add-student", student),
+
+  fetchAllStudents: (): Promise<Student[]> => ipcRenderer.invoke("fetch-all-students"),
+
+  fetchStudentByID: (studentId: string) => ipcRenderer.invoke("fetch-student-id", studentId)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

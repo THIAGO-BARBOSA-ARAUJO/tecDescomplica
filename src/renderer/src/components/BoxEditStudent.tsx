@@ -70,6 +70,29 @@ export default function Editstudent(props: EditInterface) {
   const [sexo, setSexo] = React.useState<any>();
 
 
+  const mockstudent = {
+    name: "Thiago Araujo",
+    registration: 0o1,
+    cpf: "16953214724",
+    rg: "297599334",
+    dateBirth: "03-10-1996",
+    sexo: "Masculino",
+    email: "thiafo@gmail.com",
+    nameMother: "Marilene",
+    profession: "Técnico em mecatrônica",
+    maritalStatus: "Solteiro",
+    financialSituation: "Pago",
+    Course: "Automação",
+    telephone: 21970337418,
+    startCourse: "05-05-2024",
+    street: "Santa Rosa",
+    number: 57,
+    complement: "casa 19",
+    neighborhood: "Bento Ribeiro",
+    state: "Rio de Janeiro",
+    cep: 21331420,
+  }
+
   //functions
   const handleClickOpen = () => {
     setOpen(true);
@@ -85,9 +108,15 @@ export default function Editstudent(props: EditInterface) {
     return newDate
   }
 
-  const DeleteUser = () => {
-    console.log("Usuário deletado!")
+  const SaveStudent = () => {
+    const response = window.api.addStudent(mockstudent)
+    console.log(response)
   };
+
+  async function GetAllStudents() {
+    const response = await window.api.fetchAllStudents()
+    console.log(response)
+  }
 
   return (
     <React.Fragment>
@@ -250,12 +279,12 @@ export default function Editstudent(props: EditInterface) {
         {/* botoes parte inferior */}
         <DialogActions className='mt-4'>
           <Button 
-          onClick={handleClose}
+          onClick={SaveStudent}
           variant="contained"
           >
             Salvar
           </Button>
-          <Button color="error" onClick={DeleteUser}>Fechar</Button>
+          <Button color="error" onClick={GetAllStudents}>Fechar</Button>
         
         </DialogActions>
       </Dialog>

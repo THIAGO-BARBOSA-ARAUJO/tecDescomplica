@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 export function Home() {
 
+    
+
     //const ariaLabel = { 'aria-label': 'description' };
     const navigate = useNavigate();
     return(
