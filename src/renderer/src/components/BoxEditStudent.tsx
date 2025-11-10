@@ -18,10 +18,12 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import { NewStudent, Student } from '~/src/shared/types/ipc';
 
 
 interface EditInterface {
   type: string
+  GetAllStudents: any
 }
 
 export default function Editstudent(props: EditInterface) {
@@ -31,67 +33,46 @@ export default function Editstudent(props: EditInterface) {
   //variáveis
   const [open, setOpen] = React.useState(false);
 
-  const [name, setName] = React.useState<string>();
+  const [name, setName] = React.useState<string>("");
 
-  const [registration, setRegistration] = React.useState<string>();
+  const [registration, setRegistration] = React.useState<number>(0);
 
-  const [cpf, setCpf] = React.useState<string>();
+  const [cpf, setCpf] = React.useState<string>("");
 
-  const [rg, setRg] = React.useState<string>();
+  const [rg, setRg] = React.useState<string>("");
   
   const [dateBirth, setDateBirth] = React.useState<any>();
 
-  const [email, setEmail] = React.useState<string>();
+  const [email, setEmail] = React.useState<string>("");
 
-  const [nameMother, setNameMother] = React.useState<string>();
+  const [nameMother, setNameMother] = React.useState<string>("");
 
-  const [profission, setProfission] = React.useState<string>();
+  const [profission, setProfission] = React.useState<string>("");
 
-  const [maritalStatus, setMaritalStatus] = React.useState<string>();
+  const [maritalStatus, setMaritalStatus] = React.useState<string>("");
 
-  const [financialSituation, setFinancialSituation] = React.useState<string>();
+  const [financialSituation, setFinancialSituation] = React.useState<string>("");
 
-  const [street, setStreet] = React.useState<string>();
+  const [telephone, setTelephone] = React.useState<number>(0);
 
-  const [namber, setNamber] = React.useState<string>();
+  const [street, setStreet] = React.useState<string>("");
 
-  const [complement, setComplement] = React.useState<string>();
+  const [namber, setNamber] = React.useState<number>(0);
 
-  const [neighborhood, setNeighborhood] = React.useState<string>();
+  const [complement, setComplement] = React.useState<string>("");
 
-  const [state, setState] = React.useState<string>();
+  const [neighborhood, setNeighborhood] = React.useState<string>("");
 
-  const [cep, setCep] = React.useState<string>();
+  const [state, setState] = React.useState<string>("");
+
+  const [cep, setCep] = React.useState<number>(0);
 
   const [startCourse, setStartCourse] = React.useState<any>();
 
   const [course, setCourse] = React.useState<any>();
 
   const [sexo, setSexo] = React.useState<any>();
-
-
-  const mockstudent = {
-    name: "Thiago Araujo",
-    registration: 0o1,
-    cpf: "16953214724",
-    rg: "297599334",
-    dateBirth: "03-10-1996",
-    sexo: "Masculino",
-    email: "thiafo@gmail.com",
-    nameMother: "Marilene",
-    profession: "Técnico em mecatrônica",
-    maritalStatus: "Solteiro",
-    financialSituation: "Pago",
-    Course: "Automação",
-    telephone: 21970337418,
-    startCourse: "05-05-2024",
-    street: "Santa Rosa",
-    number: 57,
-    complement: "casa 19",
-    neighborhood: "Bento Ribeiro",
-    state: "Rio de Janeiro",
-    cep: 21331420,
-  }
+  
 
   //functions
   const handleClickOpen = () => {
@@ -100,6 +81,7 @@ export default function Editstudent(props: EditInterface) {
 
   const handleClose = () => {
     setOpen(false);
+    props.GetAllStudents()
   };
 
   function FormatDate(date: any) {
@@ -108,20 +90,41 @@ export default function Editstudent(props: EditInterface) {
     return newDate
   }
 
-  const SaveStudent = () => {
-    const response = window.api.addStudent(mockstudent)
-    console.log(response)
-  };
+  const SaveStudent = async () => {
 
-  async function GetAllStudents() {
-    const response = await window.api.fetchAllStudents()
-    console.log(response)
-  }
+    const rawStudent: NewStudent = {
+      name: name,
+      registration: registration,
+      cpf: cpf,
+      rg: rg,
+      dateBirth: dateBirth === undefined ? FormatDate(moment().format()) : dateBirth,
+      sexo: sexo,
+      email: email,
+      nameMother: nameMother,
+      profession: profission,
+      maritalStatus: maritalStatus,
+      financialSituation: financialSituation,
+      Course: course,
+      telephone: telephone,
+      startCourse: startCourse === undefined ? FormatDate(moment().format()) : startCourse,
+      street: street,
+      number: namber,
+      complement: complement,
+      neighborhood: neighborhood,
+      state: state,
+      cep: cep,
+    }
+    console.log(rawStudent)
+  
+    const response = await window.api.addStudent(rawStudent)
+    props.GetAllStudents()
+    handleClose()
+  };
 
   return (
     <React.Fragment>
       <div>
-        <EditIcon color='info' sx={{ cursor: 'pointer' }} onClick={handleClickOpen}/>
+        {props.type === "Edit"? <EditIcon color='info' sx={{ cursor: 'pointer' }} onClick={handleClickOpen}/> : <Button onClick={handleClickOpen} variant="contained">Cadastrar Aluno</Button> }
       </div>
       <Dialog
       fullScreen
@@ -144,7 +147,7 @@ export default function Editstudent(props: EditInterface) {
         <div className='w-screen h-52 bg-[#03A9F4]'>
             <div className='flex justify-between '>
                 {
-                    props.type === "Edit" ? 
+                    props.type === "Register" ? 
                     <p className='mt-5 font-bold ml-4 text-[#ffffff]'>CADASTRAR</p>
                     :
                     <p className='mt-5 font-bold ml-4 text-[#ffffff]'>Nome Aluno</p>
@@ -169,7 +172,7 @@ export default function Editstudent(props: EditInterface) {
             <div className='flex justify-between gap-16'>
                 <TextField className='w-screen' onChange={(name) => setName(name.target.value)} id="name" label="Nome" variant="standard" />
 
-                <TextField type='number' className='w-screen' onChange={(registration) => setRegistration(registration.target.value)} id="registration" label="Código de Matrícula" variant="standard" />
+                <TextField type='number' className='w-screen' onChange={(registration) => setRegistration(Number(registration.target.value))} id="registration" label="Código de Matrícula" variant="standard" />
             </div>
 
             <div className='flex justify-between mt-9 gap-16'>
@@ -184,7 +187,7 @@ export default function Editstudent(props: EditInterface) {
                   id="sexo"
                   value={sexo}
                   defaultValue="Masculino"
-                  onChange={(sexo: SelectChangeEvent) => setSexo(sexo)}
+                  onChange={(sexo: SelectChangeEvent) => setSexo(sexo.target.value)}
                   label="Sexo"
                 >
                   <MenuItem value="Não informado">
@@ -198,8 +201,8 @@ export default function Editstudent(props: EditInterface) {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   defaultValue={dayjs(moment().format())}
-                  label="Data"
-                  value={dateBirth}
+                  label="Data de Nascimento"
+                  value={dayjs(dateBirth) ?? dayjs(dateBirth)}
                   onChange={(newValue: any) => setDateBirth(FormatDate(moment(newValue.$d).format()))}
                   format="DD/MM/YYYY" // Adicione esta prop
                 />
@@ -226,7 +229,7 @@ export default function Editstudent(props: EditInterface) {
                       id="course"
                       value={course}
                       defaultValue="Instalações Elétricas"
-                      onChange={(course: SelectChangeEvent) => setCourse(course)}
+                      onChange={(course: SelectChangeEvent) => setCourse(course.target.value)}
                       label="Curso"
                     >
                       <MenuItem value="Instalações Elétricas">Instalações Elétricas</MenuItem>
@@ -237,14 +240,14 @@ export default function Editstudent(props: EditInterface) {
             </div>
 
             <div className='flex justify-between mt-9 gap-16'>
-                <TextField sx={{ mt: 1}} className='w-screen' onChange={(profission) => setProfission(profission.target.value)} id="profission" label="Profissão" variant="standard" />
+                <TextField type='number' sx={{ mt: 1}} className='w-screen' onChange={(telephone) => setTelephone(Number(telephone.target.value))} id="telephone" label="Telefone" variant="standard" />
 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     className='w-screen'
                     defaultValue={dayjs(moment().format())}
-                    label="Data"
-                    value={startCourse}
+                    label="Inicio do Curso"
+                    value={dayjs(startCourse) ?? dayjs(startCourse)}
                     onChange={(newValue: any) => setStartCourse(FormatDate(moment(newValue.$d).format()))}
                     format="DD/MM/YYYY" // Adicione esta prop
                   />
@@ -258,7 +261,7 @@ export default function Editstudent(props: EditInterface) {
             <div className='flex justify-between mt-9 gap-16'>
                 <TextField className='w-screen' onChange={(street) => setStreet(street.target.value)} id="street" label="Rua" variant="standard" />
 
-                <TextField className='w-screen' type='number' onChange={(number) => setNamber(number.target.value)} id="number" label="Número" variant="standard" />
+                <TextField className='w-screen' type='number' onChange={(number) => setNamber(Number(number.target.value))} id="number" label="Número" variant="standard" />
 
                 <TextField className='w-screen' onChange={(complement) => setComplement(complement.target.value)} id="complement" label="Complement" variant="standard" />
                 
@@ -269,7 +272,7 @@ export default function Editstudent(props: EditInterface) {
 
                 <TextField className='w-screen' onChange={(state) => setState(state.target.value)} id="state" label="Estado" variant="standard" />
 
-                <TextField type='number' className='w-screen' onChange={(cep) => setCep(cep.target.value)} id="cep" label="Cep" variant="standard" />
+                <TextField type='number' className='w-screen' onChange={(cep) => setCep(Number(cep.target.value))} id="cep" label="Cep" variant="standard" />
                 
             </div>
 
@@ -284,7 +287,7 @@ export default function Editstudent(props: EditInterface) {
           >
             Salvar
           </Button>
-          <Button color="error" onClick={GetAllStudents}>Fechar</Button>
+          <Button color="error" onClick={handleClose}>Fechar</Button>
         
         </DialogActions>
       </Dialog>

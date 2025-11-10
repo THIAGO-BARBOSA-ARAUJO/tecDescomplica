@@ -5,14 +5,39 @@ import Input from "@mui/material/Input";
 import SearchIcon from '@mui/icons-material/Search';
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import Editstudent from "../components/BoxEditStudent";
+import { Student } from "~/src/shared/types/ipc";
+import React, { useEffect } from "react";
 
 
 export function Home() {
 
-    
-
     //const ariaLabel = { 'aria-label': 'description' };
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
+
+    const [students, setStudent] = React.useState<Student[]>([]);
+        
+    async function GetAllStudents() {
+        const response = await window.api.fetchAllStudents()
+        console.log(response)
+        setStudent(response)
+    }
+
+    async function searchStudent(search: string){
+        const resp = await window.api.fetchStudentByName(search)
+
+        if(resp.docs.length > 0) {
+            setStudent(resp.docs)
+        }else {
+            GetAllStudents()
+        }
+    }
+
+    useEffect(() => {
+        GetAllStudents() 
+    }, [])
+
+    
     return(
         <>  
             <header className="">
@@ -30,17 +55,17 @@ export function Home() {
                         
                         <div className="flex  items-center bg-[#ffff] w-[240px] h-[35px] rounded-xl pl-1">
                             <SearchIcon color="info"/>
-                            <input className="pl-1 w-[200px] outline-none" type="text" />                                                 
+                            <input placeholder="Busque por CPF ou Nome" onChange={(search) => searchStudent(search.target.value)} className="pl-1 w-[200px] outline-none" type="text" />                                                 
                         </div>
                     </div>
 
                     <div>
-                        <Button onClick={() => navigate('/editstudent')} variant="contained">Cadastrar Aluno</Button>
+                        <Editstudent GetAllStudents={GetAllStudents} type='Register'/>
                     </div>
                 </section>
 
                 <section className="mb-10">
-                    <TableStudents/>
+                    <TableStudents GetAllStudents={GetAllStudents} students={students}/>
                 </section>
             </div>
         </>

@@ -13,21 +13,13 @@ import { Student } from '~/src/shared/types/ipc';
 import { useEffect } from 'react';
 import React from 'react';
 
-export function TableStudents(){
+interface StudentInterface {
+  students: Student[] | undefined
+  GetAllStudents: any
+}
 
-    const [students, setStudent] = React.useState<Student[]>();
-    
-    async function GetAllStudents() {
-        const response = await window.api.fetchAllStudents()
-        setStudent(response)
-        
-    }
+export function TableStudents(props: StudentInterface){
 
-    useEffect(() => {
-         GetAllStudents()
-    }, [])
-
-    
     return(
         <div className='mt-8 mr-5 ml-5'>
             <TableContainer className="max-h-[calc(100vh_-_350px)]" component={Paper}>
@@ -37,13 +29,13 @@ export function TableStudents(){
                         <TableCell>NOME</TableCell>
                         <TableCell align="center">CPF</TableCell>
                         <TableCell align="center">EMAIL</TableCell>
-                        <TableCell align="center">COURSE</TableCell>
-                        <TableCell align="left">ACTIONS</TableCell>
+                        <TableCell align="center">CURSO</TableCell>
+                        <TableCell align="left">AÇÕES</TableCell>
                     
                     </TableRow>
                     </TableHead>
                     <TableBody >
-                    {students?.map((student: any) => (
+                    {props.students?.map((student: Student) => (
                         <TableRow
                         key={student.name}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -56,9 +48,9 @@ export function TableStudents(){
                         <TableCell align="center">{student.Course}</TableCell>
                         <TableCell align="right">
                             <div className='flex w-14 justify-between'>
-                                <Editstudent type='Edit'/>
+                                <Editstudent GetAllStudents={props.GetAllStudents} type='Edit'/>
                                 
-                                <DeleteDialog title='Deletar Aluno?' message='Deseja realmente excluir o Aluno?'/>
+                                <DeleteDialog GetAllStudents={props.GetAllStudents} idStudent={student._id} title='Deletar Aluno?' message='Deseja realmente excluir o Aluno?'/>
                             </div>
                         </TableCell>
                         </TableRow>

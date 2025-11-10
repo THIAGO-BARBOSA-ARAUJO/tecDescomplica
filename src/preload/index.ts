@@ -11,15 +11,16 @@ declare global {
 
 // Custom APIs for renderer
 const api = {
-  fetchUsers: () => {
-    return ipcRenderer.invoke("fetch-users")
-  },
 
   addStudent: (student: NewStudent): Promise<void | PouchDB.Core.Response> => ipcRenderer.invoke("add-student", student),
 
   fetchAllStudents: (): Promise<Student[]> => ipcRenderer.invoke("fetch-all-students"),
 
-  fetchStudentByID: (studentId: string) => ipcRenderer.invoke("fetch-student-id", studentId)
+  fetchStudentByID: (studentId: string) => ipcRenderer.invoke("fetch-student-id", studentId),
+
+  deleteStudent: (studentId: string) => ipcRenderer.invoke("delete-student", studentId),
+
+  fetchStudentByName: (search: string) => ipcRenderer.invoke("fetch-student-name", search),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

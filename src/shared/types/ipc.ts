@@ -1,8 +1,8 @@
 export interface Student {
     _id: string;
     _rev?: string;
-    name: string;
-    registration: number;
+    name: string | undefined;
+    registration: number | undefined;
     cpf: string;
     rg: string;
     dateBirth: string;

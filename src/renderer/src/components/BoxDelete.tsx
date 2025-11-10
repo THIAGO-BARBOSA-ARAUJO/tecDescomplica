@@ -10,6 +10,8 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 interface Delete {
   title: string,
   message: string
+  idStudent: string
+  GetAllStudents: any
 }
 
 export default function DeleteDialog(props: Delete) {
@@ -23,8 +25,13 @@ export default function DeleteDialog(props: Delete) {
     setOpen(false);
   };
 
-  const DeleteUser = () => {
-    console.log("Usuário deletado!")
+  const DeleteUser = async () => {
+    const id = props.idStudent
+    const response = await window.api.deleteStudent(id)
+    console.log(response)
+    props.GetAllStudents()
+    handleClose()
+    
   };
 
   return (
@@ -58,8 +65,7 @@ export default function DeleteDialog(props: Delete) {
         <DialogActions>
           <Button 
           onClick={handleClose}
-          variant="contained"
-          >
+          variant="contained">
             Fechar
           </Button>
           <Button color="error" onClick={DeleteUser}>Excluir</Button>
