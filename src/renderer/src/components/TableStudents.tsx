@@ -48,7 +48,7 @@ export function TableStudents(props: StudentInterface){
                         <TableCell align="center">{student.Course}</TableCell>
                         <TableCell align="right">
                             <div className='flex w-14 justify-between'>
-                                <Editstudent GetAllStudents={props.GetAllStudents} type='Edit'/>
+                                <Editstudent student={student} GetAllStudents={props.GetAllStudents} type='Edit'/>
                                 
                                 <DeleteDialog GetAllStudents={props.GetAllStudents} idStudent={student._id} title='Deletar Aluno?' message='Deseja realmente excluir o Aluno?'/>
                             </div>
