@@ -10,8 +10,7 @@ import Paper from '@mui/material/Paper';
 import Editstudent from "../components/BoxEditStudent"
 import DeleteDialog from "../components/BoxDelete";
 import { Student } from '~/src/shared/types/ipc';
-import { useEffect } from 'react';
-import React from 'react';
+import StudentNotfound from "../assets/img/student_notfound.png"
 
 interface StudentInterface {
   students: Student[] | undefined
@@ -22,42 +21,49 @@ export function TableStudents(props: StudentInterface){
 
     return(
         <div className='mt-8 mr-5 ml-5'>
-            <TableContainer className="max-h-[calc(100vh_-_350px)]" component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                    <TableRow>
-                        <TableCell>NOME</TableCell>
-                        <TableCell align="center">CPF</TableCell>
-                        <TableCell align="center">EMAIL</TableCell>
-                        <TableCell align="center">CURSO</TableCell>
-                        <TableCell align="left">AÇÕES</TableCell>
-                    
-                    </TableRow>
-                    </TableHead>
-                    <TableBody >
-                    {props.students?.map((student: Student) => (
-                        <TableRow
-                        key={student.name}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                        <TableCell component="th" scope="row">
-                            {student.name}
-                        </TableCell>
-                        <TableCell align="center">{student.cpf}</TableCell>
-                        <TableCell align="center">{student.email}</TableCell>
-                        <TableCell align="center">{student.Course}</TableCell>
-                        <TableCell align="right">
-                            <div className='flex w-14 justify-between'>
-                                <Editstudent student={student} GetAllStudents={props.GetAllStudents} type='Edit'/>
-                                
-                                <DeleteDialog GetAllStudents={props.GetAllStudents} idStudent={student._id} title='Deletar Aluno?' message='Deseja realmente excluir o Aluno?'/>
-                            </div>
-                        </TableCell>
-                        </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            {
+                props.students!.length > 0 ? 
+                    <TableContainer className="max-h-[calc(100vh_-_350px)]" component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                            <TableRow>
+                                <TableCell>NOME</TableCell>
+                                <TableCell align="center">CPF</TableCell>
+                                <TableCell align="center">EMAIL</TableCell>
+                                <TableCell align="center">CURSO</TableCell>
+                                <TableCell align="left">AÇÕES</TableCell>
+                            
+                            </TableRow>
+                            </TableHead>
+                            <TableBody >
+                                {props.students?.map((student: Student) => (
+                                    <TableRow
+                                    key={student.name}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                    <TableCell component="th" scope="row">
+                                        {student.name}
+                                    </TableCell>
+                                    <TableCell align="center">{student.cpf}</TableCell>
+                                    <TableCell align="center">{student.email}</TableCell>
+                                    <TableCell align="center">{student.Course}</TableCell>
+                                    <TableCell align="right">
+                                        <div className='flex w-14 justify-between'>
+                                            <Editstudent student={student} GetAllStudents={props.GetAllStudents} type='Edit'/>
+                                            
+                                            <DeleteDialog GetAllStudents={props.GetAllStudents} idStudent={student._id} title='Deletar Aluno?' message='Deseja realmente excluir o Aluno?'/>
+                                        </div>
+                                    </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                :
+                    <div className='w-auto flex justify-center items-center'>
+                        <img className='max-w-full h-auto md:w-1/2' src={StudentNotfound} alt='nenhum aluno encontrado'/>
+                    </div>
+            }
         </div>
     )
 }
