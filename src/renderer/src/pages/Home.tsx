@@ -19,7 +19,6 @@ export function Home() {
         
     async function GetAllStudents() {
         const response = await window.api.fetchAllStudents()
-        console.log(response)
         setStudent(response)
     }
 

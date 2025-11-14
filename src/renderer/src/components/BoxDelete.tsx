@@ -28,7 +28,6 @@ export default function DeleteDialog(props: Delete) {
   const DeleteUser = async () => {
     const id = props.idStudent
     const response = await window.api.deleteStudent(id)
-    console.log(response)
     props.GetAllStudents()
     handleClose()
     

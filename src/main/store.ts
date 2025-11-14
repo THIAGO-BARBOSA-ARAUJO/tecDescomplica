@@ -101,7 +101,7 @@ ipcMain.handle("delete-student", async (event, studentId: string): Promise<Pouch
     return await deleteStudent(studentId)
 })
 
-// busca pelo nome
+// busca pelo nome ou cpf
 
 async function fetchSudentByName(search: string) {
 
@@ -126,5 +126,7 @@ ipcMain.handle("fetch-student-name", async (event, search: string) => {
     const result = await fetchSudentByName(search)
     return result
 })
+
+// edita estudante
 
 
