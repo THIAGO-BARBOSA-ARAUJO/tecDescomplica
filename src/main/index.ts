@@ -9,9 +9,12 @@ import './store'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1050,
+    height: 690,
+    minWidth: 1050,
+    minHeight: 690,
     show: false,
+    //resizable: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
