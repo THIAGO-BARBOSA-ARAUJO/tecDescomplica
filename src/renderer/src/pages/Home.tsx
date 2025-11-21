@@ -1,10 +1,7 @@
 import { Header } from "../components/Header";
 import { TableStudents } from "../components/TableStudents";
-
-import Input from "@mui/material/Input";
+import { ToastContainer, toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
 import Editstudent from "../components/BoxEditStudent";
 import { Student } from "~/src/shared/types/ipc";
 import React, { useEffect } from "react";
@@ -43,6 +40,7 @@ export function Home() {
                 <Header/>
             </header>
             <div className="bg-[#E7E5E4] h-screen">
+                <ToastContainer />
                 <div className="flex justify-between flex-col">
                     <h1 className="ml-5 mt-[2.5rem] text-[1.875rem] font-bold text-[#329CCA]">Gestão de Alunos</h1>
                     <p className="font-bold ml-5 mt-[.5rem] text-[#949494]">Configure e cadastre alunos</p>

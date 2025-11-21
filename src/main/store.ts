@@ -34,7 +34,7 @@ async function addStudent(student: NewStudent): Promise<PouchDB.Core.Response | 
     }
 
     return db.put(data)
-        .then(response => console.log(response))
+        .then(response => response)
         .catch(error => console.error("Erro ao cadastrar", error))
 }
 
@@ -129,4 +129,25 @@ ipcMain.handle("fetch-student-name", async (event, search: string) => {
 
 // edita estudante
 
+async function EditStudent(Student: Student) {
+    return db.put(Student)
+        .then(response => response)
+        .catch(error => console.error("Erro ao cadastrar", error))
+}
 
+ipcMain.handle("edit-student", async (event, student: Student) => {
+    const result = await EditStudent(student)
+    return result
+})
+
+// get endereço
+
+async function getAddress(cep: any) {
+    const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+    return await resp.json()
+}
+
+ipcMain.handle("get-address", async (event, cep) => {
+    const result = await getAddress(cep)
+    return result
+})

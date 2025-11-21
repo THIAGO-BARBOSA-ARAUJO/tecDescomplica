@@ -5,7 +5,7 @@ export interface Student {
     registration: number | undefined;
     cpf: string;
     rg: string;
-    dateBirth: string;
+    dateBirth: string | undefined;
     sexo: string;
     email: string;
     nameMother: string;

@@ -2,9 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+// import fetch from 'electron-fetch'
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -20,6 +18,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { NewStudent, Student } from '~/src/shared/types/ipc';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 
 interface EditInterface {
@@ -30,19 +29,21 @@ interface EditInterface {
 
 export default function Editstudent(props: EditInterface) {
 
-  const { register, reset, handleSubmit, formState: { errors } } = useForm();
+  const { register, reset, handleSubmit, setValue, formState: { errors } } = useForm();
   const today = moment().format().split("T")[0]
  
   //variáveis
   const [open, setOpen] = React.useState(false);
   
-  const [dateBirth, setDateBirth] = React.useState<any>();
+  const [dateBirth, setDateBirth] = React.useState<string>();
 
   const [startCourse, setStartCourse] = React.useState<any>();
 
-  const [course, setCourse] = React.useState<any>();
+  const [course, setCourse] = React.useState<any>("Instalações Elétrica");
 
-  const [sexo, setSexo] = React.useState<any>();
+  const [sexo, setSexo] = React.useState<any>("Masculino");
+
+  const [viacep, setViaCep] = React.useState<any>({});
   
 
   //functions
@@ -52,6 +53,8 @@ export default function Editstudent(props: EditInterface) {
 
   const handleClose = () => {
     setOpen(false);
+    reset()
+    setViaCep({})
     props.GetAllStudents()
   };
 
@@ -62,44 +65,94 @@ export default function Editstudent(props: EditInterface) {
   }
 
   const onSubmit = async (data: any) => {
+    
     data.dateBirth = dateBirth
     data.startCourse = startCourse
     data.Course = course
     data.sexo = sexo
 
-    console.log("var",dateBirth)
 
     if(props.type === "Edit") {
       data._rev = props.student._rev
-      //const response = await window.api.addStudent(data)
-      console.log("data", data)
-      reset()
-      data.dateBirth = ""
-      data.startCourse = ""
-      data.Course = ""
-      data.sexo = ""
+      data._id = props.student._id
+      
+      const response = await window.api.editStudent(data)
+      if(response?.ok === true) {
+        toast(`Os dados foi editado com sucesso`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+      }
+      else {
+        toast(`Erro ao editar informações do aluno ${props.student.name}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+      }
 
-      props.GetAllStudents()
-      handleClose()
+      //reset()
+      // data.dateBirth = ""
+      // data.startCourse = ""
+      // data.Course = ""
+      // data.sexo = ""
+
+       props.GetAllStudents()
+       handleClose()
     }else {
+      console.log("data",data)
       const response = await window.api.addStudent(data)
-      console.log(data)
-      reset()
-      data.dateBirth = ""
-      data.startCourse = ""
-      data.Course = ""
-      data.sexo = ""
+      console.log("resp",response)
+      if(response?.ok === true) {
+        toast(`O aluno foi cadastrado com sucesso`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+      }
+      else {
+        toast(`Erro ao cadastrar informações do aluno(a)`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+      }
 
       props.GetAllStudents()
       handleClose()
     }
-
-    
-
-    //reseta as variáveis
-
-    
+  
   }
+
+  const handleInput = async (event: any) => {
+    const response = await window.api.fetchAddress(event.target.value)
+    if(response.bairro !== "" && response.bairro !== null && response.bairro !== undefined){
+      setViaCep(response)
+      console.log(viacep)
+    }
+  }; 
+  
 
   return (
     <React.Fragment>
@@ -167,7 +220,7 @@ export default function Editstudent(props: EditInterface) {
                   <Select sx={{ m: 1, minWidth: 140, maxWidth: 140 }}
                     labelId="sexo"
                     id="sexo"
-                    value={sexo}
+                    //value={sexo}
                     defaultValue={props.type === "Edit" ? props.student.sexo : "Masculino"}
                     onChange={(sexo: SelectChangeEvent) => setSexo(sexo.target.value)}
                     label="Sexo"
@@ -210,11 +263,11 @@ export default function Editstudent(props: EditInterface) {
                         labelId="course"
                         id="course"
                         value={course}
-                        defaultValue={props.type === "Edit" ? props.student.Course : "Instalações Elétricas"}
+                        defaultValue={props.type === "Edit" ? props.student.Course : "Instalações Elétrica"}
                          onChange={(course: SelectChangeEvent) => setCourse(course.target.value)}
                         label="Curso"
                       >
-                        <MenuItem value="Instalações Elétricas">Instalações Elétricas</MenuItem>
+                        <MenuItem value="Instalações Elétrica">Instalações Elétrica</MenuItem>
                         <MenuItem value="Comandos Elétricos">Comandos Elétricos</MenuItem>
                         <MenuItem value="Automação">Automação</MenuItem>
                       </Select>
@@ -231,7 +284,7 @@ export default function Editstudent(props: EditInterface) {
                       //defaultValue={dayjs(moment().format())}
                       label="Inicio do Curso"
                       //value={dayjs(startCourse) ?? dayjs(startCourse)}
-                      onChange={(newValue: any) => setStartCourse(FormatDate(moment(newValue.$d).format()))}
+                      onChange={(newValue: any) => startCourse(moment(newValue.$d).format("YYYY-MM-DD"))}
                       format="DD/MM/YYYY" // Adicione esta prop
                     />
                   </LocalizationProvider>
@@ -242,20 +295,52 @@ export default function Editstudent(props: EditInterface) {
               </div>
 
               <div className='flex justify-between mt-9 gap-16'>
-                  <TextField defaultValue={props.type === "Edit" ? props.student.street : ""} className='w-screen' {...register('street')} id="street" label="Rua" variant="standard" />
+                  <TextField  
+                    defaultValue={props.type !== "Edit" && viacep.logradouro ? setValue("street",viacep.logradouro) : (props.type === "Edit" ? props.student.street : setValue("street", ""))} 
+                  
+                    className='w-screen' {...register('street')} 
+                  
+                    id="street" label="Rua" 
+                  
+                    variant="standard" />
 
                   <TextField defaultValue={props.type === "Edit" ? props.student.number : ""} className='w-screen' type='number' {...register('number')} id="number" label="Número" variant="standard" />
 
-                  <TextField defaultValue={props.type === "Edit" ? props.student.complement : ""} className='w-screen' {...register('complement')} id="complement" label="Complement" variant="standard" />
+                  <TextField 
+                    value={props.type !== "Edit" && viacep.complemento ? setValue("complement",viacep.complemento) : setValue("complement", "")}
+                    
+                    defaultValue={props.type !== "Edit" && viacep.complemento ? setValue("complement",viacep.complemento) : (props.type === "Edit" ? props.student.complement : setValue("complement", ""))}
+                    
+                    className='w-screen' {...register('complement')} id="complement" 
+                    
+                    label="Complement" variant="standard" />
                   
               </div>
 
               <div className='flex justify-between mt-9 gap-16'>
-                  <TextField defaultValue={props.type === "Edit" ? props.student.neighborhood : ""} className='w-screen' {...register('neighborhood')} id="neighborhood" label="Bairro" variant="standard" />
+                  <TextField  
+                  
+                  defaultValue={props.type !== "Edit" && viacep.bairro ? setValue("neighborhood", viacep.bairro) : (props.type === "Edit" ? props.student.neighborhood : setValue("neighborhood", ""))}
+                  
+                  className='w-screen' {...register('neighborhood')} id="neighborhood" 
+                  
+                  label="Bairro" 
+                  
+                  variant="standard" />
 
-                  <TextField defaultValue={props.type === "Edit" ? props.student.state : ""} className='w-screen' {...register('state')} id="state" label="Estado" variant="standard" />
+                  <TextField 
+                  
+                  defaultValue={props.type !== "Edit" && viacep.estado ? setValue("state", viacep.estado) : (props.type === "Edit" ? props.student.state : setValue("state", ""))}
+                  
+                  className='w-screen' {...register('state')} 
+                  
+                  id="state" 
+                  
+                  label="Estado" 
+                  
+                  variant="standard" />
 
-                  <TextField defaultValue={props.type === "Edit" ? props.student.cep : ""} type='number' className='w-screen' {...register('cep')} id="cep" label="Cep" variant="standard" />
+                  <TextField defaultValue={props.type === "Edit" ? props.student.cep : ""} onInput={handleInput} type='number' className='w-screen' {...register('cep')} id="cep" label="Cep" variant="standard" />
                   
               </div>
 

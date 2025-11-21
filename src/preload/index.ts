@@ -14,6 +14,8 @@ const api = {
 
   addStudent: (student: NewStudent): Promise<void | PouchDB.Core.Response> => ipcRenderer.invoke("add-student", student),
 
+  editStudent: (student: Student) => ipcRenderer.invoke("edit-student", student),
+
   fetchAllStudents: (): Promise<Student[]> => ipcRenderer.invoke("fetch-all-students"),
 
   fetchStudentByID: (studentId: string) => ipcRenderer.invoke("fetch-student-id", studentId),
@@ -21,6 +23,8 @@ const api = {
   deleteStudent: (studentId: string) => ipcRenderer.invoke("delete-student", studentId),
 
   fetchStudentByName: (search: string) => ipcRenderer.invoke("fetch-student-name", search),
+
+  fetchAddress: (cep: any) => ipcRenderer.invoke("get-address", cep),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
