@@ -12,7 +12,7 @@ declare global {
 // Custom APIs for renderer
 const api = {
 
-  addStudent: (student: NewStudent): Promise<void | PouchDB.Core.Response> => ipcRenderer.invoke("add-student", student),
+  addStudent: (student: NewStudent): Promise<String[]> => ipcRenderer.invoke("add-student", student),
 
   editStudent: (student: Student) => ipcRenderer.invoke("edit-student", student),
 

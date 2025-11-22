@@ -111,10 +111,9 @@ export default function Editstudent(props: EditInterface) {
        props.GetAllStudents()
        handleClose()
     }else {
-      console.log("data",data)
       const response = await window.api.addStudent(data)
-      console.log("resp",response)
-      if(response?.ok === true) {
+      console.log(response)
+      if(response?.length <= 0) {
         toast(`O aluno foi cadastrado com sucesso`, {
         position: "top-right",
         autoClose: 5000,
@@ -127,20 +126,33 @@ export default function Editstudent(props: EditInterface) {
         });
       }
       else {
-        toast(`Erro ao cadastrar informações do aluno(a)`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        });
+        if(response?.length <= 3) {
+          toast(`Erro: ${response[0]} ${response.length >= 3 && response.length <= 2 ? "," + response[1] : ""} ${response.length === 3 ? "," + response[3] : ""}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }else {
+          toast(`Erro ao cadastrar o aluno(a) reveja as informações`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+        }
       }
 
       props.GetAllStudents()
-      handleClose()
+      //handleClose()
     }
   
   }
@@ -307,7 +319,6 @@ export default function Editstudent(props: EditInterface) {
                   <TextField defaultValue={props.type === "Edit" ? props.student.number : ""} className='w-screen' type='number' {...register('number')} id="number" label="Número" variant="standard" />
 
                   <TextField 
-                    value={props.type !== "Edit" && viacep.complemento ? setValue("complement",viacep.complemento) : setValue("complement", "")}
                     
                     defaultValue={props.type !== "Edit" && viacep.complemento ? setValue("complement",viacep.complemento) : (props.type === "Edit" ? props.student.complement : setValue("complement", ""))}
                     

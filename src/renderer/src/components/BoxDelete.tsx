@@ -6,6 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import { toast } from 'react-toastify';
 
 interface Delete {
   title: string,
@@ -28,6 +29,29 @@ export default function DeleteDialog(props: Delete) {
   const DeleteUser = async () => {
     const id = props.idStudent
     const response = await window.api.deleteStudent(id)
+    if(response?.ok === true) {
+      toast(`O aluno foi deletado com sucesso!`, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              });
+    }else {
+      toast(`Não foi possível deletar o aluno!`, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              });
+    }
     props.GetAllStudents()
     handleClose()
     

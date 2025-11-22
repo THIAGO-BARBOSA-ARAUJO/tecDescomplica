@@ -6,6 +6,8 @@ import { Student, NewStudent } from '../shared/types/ipc'
 import { randomUUID } from 'node:crypto'
 PouchDb.plugin(PouchDBFind);
 import PouchDBFind from 'pouchdb-find';
+import  studentSchema  from "../shared/schemas/StudentSchema"
+import { messages } from 'joi-translation-pt-br';
 
 
 
@@ -25,17 +27,25 @@ const db = new PouchDb<Student>(dbPath)
 
 // função para adiciona estudante no banco de dados
 
-async function addStudent(student: NewStudent): Promise<PouchDB.Core.Response | void> {
-    const id = randomUUID()
+async function addStudent(student: NewStudent): Promise<PouchDB.Core.Response | void | String[]> {
+    const { error, value } = studentSchema.validate(student, { messages, abortEarly: false });
+
+    if(error){
+        const errorMessages = error.details.map(detail => detail.message);
+        return errorMessages
+    }else {
+        const id = randomUUID()
 
     const data: Student = {
         ...student,
         _id: id
     }
 
-    return db.put(data)
+    db.put(data)
         .then(response => response)
         .catch(error => console.error("Erro ao cadastrar", error))
+    return []
+    }
 }
 
 ipcMain.handle("add-student", async (event, student: NewStudent) => {
