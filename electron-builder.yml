@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.teceduca.app
 productName: teceduca
 directories:
   buildResources: build
@@ -31,13 +31,13 @@ dmg:
 linux:
   target:
     - AppImage
-    - snap
     - deb
-  maintainer: electronjs.org
+    - rmp
+    - freebsd
+    - pacman
+  maintainer: teceduca.com
+  synopsis: ${description}
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
-publish:
-  provider: generic
-  url: https://example.com/auto-updates

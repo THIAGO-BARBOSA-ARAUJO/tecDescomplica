@@ -45,10 +45,12 @@ export default function Editstudent(props: EditInterface) {
 
   const [viacep, setViaCep] = React.useState<any>({});
   
+  console.log(props.student)
 
   //functions
   const handleClickOpen = () => {
     setOpen(true);
+    console.log(props)
   };
 
   const handleClose = () => {
@@ -112,7 +114,6 @@ export default function Editstudent(props: EditInterface) {
        handleClose()
     }else {
       const response = await window.api.addStudent(data)
-      console.log(response)
       if(response?.length <= 0) {
         toast(`O aluno foi cadastrado com sucesso`, {
         position: "top-right",
@@ -152,7 +153,7 @@ export default function Editstudent(props: EditInterface) {
       }
 
       props.GetAllStudents()
-      //handleClose()
+      handleClose()
     }
   
   }
@@ -165,7 +166,6 @@ export default function Editstudent(props: EditInterface) {
     }
   }; 
   
-
   return (
     <React.Fragment>
       <div>
@@ -274,7 +274,7 @@ export default function Editstudent(props: EditInterface) {
                       <Select sx={{ m: 1, minWidth: 180, maxWidth: 180 }}
                         labelId="course"
                         id="course"
-                        value={course}
+                        //value={course}
                         defaultValue={props.type === "Edit" ? props.student.Course : "Instalações Elétrica"}
                          onChange={(course: SelectChangeEvent) => setCourse(course.target.value)}
                         label="Curso"
@@ -296,7 +296,7 @@ export default function Editstudent(props: EditInterface) {
                       //defaultValue={dayjs(moment().format())}
                       label="Inicio do Curso"
                       //value={dayjs(startCourse) ?? dayjs(startCourse)}
-                      onChange={(newValue: any) => startCourse(moment(newValue.$d).format("YYYY-MM-DD"))}
+                      onChange={(newValue: any) => setStartCourse(moment(newValue.$d).format("YYYY-MM-DD"))}
                       format="DD/MM/YYYY" // Adicione esta prop
                     />
                   </LocalizationProvider>
